@@ -93,7 +93,7 @@ class CodeQualityTest < ActiveSupport::TestCase
       'Owner::_extract_from_container' => 84.07,
       'PersonController#internal_register' => 112.01,
       'Package#find_changed_issues' => 93.74,
-      'Project#update_one_repository_without_path' => 150.7,
+      'Project#update_one_repository_without_path' => 161.85,
       'PublicController#binary_packages' => 126.16,
       'Repository#cleanup_before_destroy' => 82.98,
       'BsRequest#assignreview' => 86.62, 

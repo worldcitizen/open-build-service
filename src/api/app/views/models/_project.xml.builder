@@ -20,11 +20,6 @@ xml.project(project_attributes) do
 
   my_model.render_relationships(xml)
 
-  my_model.downloads.each do |dl|
-    xml.download(baseurl: dl.baseurl, metafile: dl.metafile,
-                 mtype: dl.mtype, arch: dl.architecture.name)
-  end
-
   repos = my_model.repositories.not_remote.sort { |a, b| b.name <=> a.name }
   FlagHelper.flag_types.each do |flag_name|
     flaglist = my_model.type_flags(flag_name)
@@ -48,6 +43,9 @@ xml.project(project_attributes) do
         params[:repository] = rt.target_repository.name
         params[:trigger] = rt.trigger unless rt.trigger.blank?
         r.releasetarget(params)
+      end
+      if repo.download
+        r.download repo.download
       end
       if repo.hostsystem
         r.hostsystem(:project => repo.hostsystem.project.name, :repository => repo.hostsystem.name)

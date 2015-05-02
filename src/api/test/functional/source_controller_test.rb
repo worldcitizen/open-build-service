@@ -428,10 +428,10 @@ class SourceControllerTest < ActionDispatch::IntegrationTest
 
   def test_create_and_remove_download_on_demand_definitions
     build_meta="<project name='TEMPORARY:build'><title></title><description/>
-                      <download arch='x86_64' baseurl='http://somewhere' mtype='rpm-md' metafile='somefile'/>
                       <repository name='repo1'>
                         <path project='BaseDistro' repository='BaseDistro_repo'/>
                         <arch>x86_64</arch>
+                        <download>http://somewhere</download>
                       </repository>
                    </project>"
 
@@ -441,23 +441,23 @@ class SourceControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     get '/source/TEMPORARY:build/_meta'
     assert_response :success
-    assert_xml_tag :parent => { :tag => 'project' },
-                   :tag => 'download', :attributes => { :arch => 'x86_64', :baseurl => 'http://somewhere', :mtype => 'rpm-md', :metafile => 'somefile' }
+    assert_xml_tag :parent => { :tag => 'repository' },
+                   :tag => 'download', :content => 'http://somewhere'
 
     # change download definition
     build_meta="<project name='TEMPORARY:build'><title></title><description/>
-                      <download arch='x86_64' baseurl='http://somewhereelse' mtype='yast' metafile='someotherfile'/>
                       <repository name='repo1'>
                         <path project='BaseDistro' repository='BaseDistro_repo'/>
                         <arch>x86_64</arch>
+                        <download>http://somewhereelse</download>
                       </repository>
                    </project>"
     put url_for(:controller => :source, :action => :update_project_meta, :project => 'TEMPORARY:build'), build_meta
     assert_response :success
     get '/source/TEMPORARY:build/_meta'
     assert_response :success
-    assert_xml_tag :parent => { :tag => 'project' },
-                   :tag => 'download', :attributes => { :arch => 'x86_64', :baseurl => 'http://somewhereelse', :mtype => 'yast', :metafile => 'someotherfile' }
+    assert_xml_tag :parent => { :tag => 'repository' },
+                   :tag => 'download', :content => 'http://somewhereelse'
 
     # delete download definition
     build_meta="<project name='TEMPORARY:build'><title></title><description/>

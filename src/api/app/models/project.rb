@@ -51,7 +51,6 @@ class Project < ActiveRecord::Base
   has_many :tags, :through => :taggings
 
   has_many :download_stats
-  has_many :downloads, :dependent => :delete_all, foreign_key: :db_project_id
 
   has_many :flags, dependent: :delete_all, inverse_of: :project
 
@@ -462,9 +461,6 @@ class Project < ActiveRecord::Base
       end
     end
 
-    #--- update repository download settings ---#
-    update_download_settings(xmlhash)
-
     #--- update repositories ---#
     update_repositories(xmlhash, force)
 
@@ -568,6 +564,15 @@ class Project < ActiveRecord::Base
         current_repo.linkedbuild = repo['linkedbuild']
       end
     end
+    # download element
+    if not repo.has_key? 'download' and current_repo.download
+      current_repo.download = nil
+    end
+    if repo.has_key? 'download'
+      if repo['download'] != current_repo.download
+        current_repo.download = repo['download']
+      end
+    end
     #--- end of repository flags ---#
 
     #destroy all current releasetargets
@@ -623,35 +628,6 @@ class Project < ActiveRecord::Base
     current_repo.save!
 
     @repocache.delete repo['name']
-  end
-
-  def update_download_settings(xmlhash)
-    dlcache = Hash.new
-    self.downloads.each do |dl|
-      dlcache[dl.architecture.name] = dl
-    end
-
-    xmlhash.elements('download') do |dl|
-      if dlcache.has_key? dl['arch']
-        logger.debug "modifying download element, arch: #{dl['arch']}"
-        cur = dlcache[dl['arch']]
-      else
-        logger.debug "adding new download entry, arch #{dl['arch']}"
-        cur = self.downloads.create
-      end
-      cur.metafile = dl['metafile']
-      cur.mtype = dl['mtype']
-      cur.baseurl = dl['baseurl']
-      raise SaveError, 'unknown architecture' unless Architecture.archcache.has_key? dl['arch']
-      cur.architecture = Architecture.archcache[dl['arch']]
-      cur.save!
-      dlcache.delete dl['arch']
-    end
-
-    dlcache.each do |arch, object|
-      logger.debug "remove download entry #{arch}"
-      self.downloads.destroy object
-    end
   end
 
   def parse_develproject(xmlhash)

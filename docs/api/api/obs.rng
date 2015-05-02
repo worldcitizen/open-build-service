@@ -262,6 +262,11 @@
             <ref name="build-arch" />
           </element>
         </zeroOrMore>
+        <optional>
+          <element name="download">
+            <text/>
+          </element>
+        </optional>
       </interleave>
       <empty/>
     </element>

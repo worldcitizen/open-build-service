@@ -446,18 +446,6 @@ CREATE TABLE `distributions` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE `downloads` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `baseurl` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `metafile` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `mtype` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `architecture_id` int(11) DEFAULT NULL,
-  `db_project_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `index_downloads_on_db_project_id` (`db_project_id`),
-  KEY `index_downloads_on_architecture_id` (`architecture_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
 CREATE TABLE `event_subscriptions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `eventtype` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -881,6 +869,7 @@ CREATE TABLE `repositories` (
   `block` enum('all','local','never') CHARACTER SET utf8 DEFAULT NULL,
   `linkedbuild` enum('off','localdep','all') CHARACTER SET utf8 DEFAULT NULL,
   `hostsystem_id` int(11) DEFAULT NULL,
+  `download` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `projects_name_index` (`db_project_id`,`name`,`remote_project_name`),
   KEY `remote_project_name_index` (`remote_project_name`),
@@ -1635,6 +1624,8 @@ INSERT INTO schema_migrations (version) VALUES ('20150129135426');
 INSERT INTO schema_migrations (version) VALUES ('20150129135427');
 
 INSERT INTO schema_migrations (version) VALUES ('20150227063641');
+
+INSERT INTO schema_migrations (version) VALUES ('20150502063641');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 

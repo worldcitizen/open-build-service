@@ -67,6 +67,7 @@ our $repo = [
 	    'repository',
      ],
       [ 'arch' ],
+        'download',
 	'status',
 ];
 
@@ -103,14 +104,6 @@ our @roles = (
      ]],
 );
 
-our $download = [
-    'download' =>
-    'baseurl',
-    'metafile',
-    'mtype',
-    'arch',
-];
-
 our $maintenance = [
     'maintenance' =>
      [[ 'maintains' =>
@@ -135,7 +128,6 @@ our $proj = [
 	    'project',
       ],
 	@roles,
-      [ $download ],
 	$maintenance,
 	@flags,
       [ $repo ],
@@ -286,7 +278,6 @@ our $projpack = [
 	    @flags,
 	    @roles,
 	  [ $repo ],
-          [ $download ],
 	 [[ 'package' =>
 		'name',
 		'rev',
