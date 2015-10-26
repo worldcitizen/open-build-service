@@ -280,6 +280,10 @@ class ApplicationController < ActionController::Base
       raise AuthenticationRequiredError.new "Unknown user '#{@login}' or invalid password"
     end
 
+    if @http_user.new_record?
+      raise AuthenticationRequiredError.new "User '#{@http_user.login}' got not saved, user data incomplete?"
+    end
+
     if @http_user.state == User::STATES['ichainrequest'] or @http_user.state == User::STATES['unconfirmed']
       raise UnconfirmedUserError.new "User is registered but not yet approved. " +
                                          "Your account is a registered account, but it is not yet approved for the OBS by admin."
